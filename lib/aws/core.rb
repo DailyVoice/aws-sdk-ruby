@@ -31,6 +31,7 @@ require 'aws/core/autoloader'
 # * {AWS::ElasticBeanstalk}
 # * {AWS::ELB}
 # * {AWS::EMR}
+# * {AWS::Glacier}
 # * {AWS::IAM}
 # * {AWS::RDS}
 # * {AWS::Route53}
@@ -90,6 +91,7 @@ module AWS
       autoload :Data,                      'data'
       autoload :IndifferentHash,           'indifferent_hash'
       autoload :Inflection,                'inflection'
+      autoload :JSONParser,                'json_parser'
 
       autoload :JSONClient,                'json_client'
       autoload :JSONRequestBuilder,        'json_request_builder'
@@ -113,7 +115,8 @@ module AWS
       autoload :Response,                  'response'
       autoload :ResponseCache,             'response_cache'
 
-      autoload :RESTClient,                'rest_client'
+      autoload :RESTJSONClient,            'rest_xml_client'
+      autoload :RESTXMLClient,             'rest_json_client'
       autoload :RESTRequestBuilder,        'rest_request_builder'
       autoload :RESTResponseParser,        'rest_response_parser'
 
@@ -125,6 +128,7 @@ module AWS
 
     module Options
       AWS.register_autoloads(self) do
+        autoload :JSONSerializer, 'json_serializer'
         autoload :XMLSerializer, 'xml_serializer'
         autoload :Validator, 'validator'
       end
@@ -219,6 +223,10 @@ module AWS
     # @option options [String,nil] :session_token AWS secret token
     #   credential.
     #
+    # @option options [String,nil] :account_id (nil) Your AWS account id.  Only
+    #   certain services (like Glacier) require you to configure your
+    #   account id.
+    #
     # @option options [String] :auto_scaling_endpoint ('autoscaling.us-east-1.amazonaws.com')
     #   The service endpoint for Auto Scaling.
     #
@@ -257,6 +265,9 @@ module AWS
     #
     # @option options [String] :elb_endpoint ('elasticloadbalancing.us-east-1.amazonaws.com')
     #   The service endpoint for Elastic Load Balancing.
+    #
+    # @option options [String] :glacier_endpoint ('glacier.us-east-1.amazonaws.com')
+    #   The service endpoint for Amazon Glacier.
     #
     # @option options [Object] :http_handler (AWS::Core::Http::NetHttpHandler)
     #   The http handler that sends requests to AWS.

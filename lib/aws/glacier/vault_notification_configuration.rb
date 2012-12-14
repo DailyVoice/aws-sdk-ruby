@@ -12,24 +12,16 @@
 # language governing permissions and limitations under the License.
 
 module AWS
-  module Core
+  class Glacier
+    class VaultNotificationConfiguration
 
-    # @private
-    class JSONRequestBuilder
+      # @return [SNS::Topic] The SNS topic Glacier will publish events to.
+      attr_accessor :sns_topic
 
-      def initialize api, operation
-        @x_amz_target = api[:target_prefix] + operation[:name]
-        @content_type = "application/x-amz-json-#{api[:json_version] || 1.0}"
-        @grammar = OptionGrammar.customize(operation[:inputs])
-      end
-
-      def populate_request request, params
-        request.headers["content-type"] = @content_type
-        request.headers["x-amz-target"] = @x_amz_target
-        request.body = @grammar.to_json(params)
-      end
+      # @return [Array<String>] events An array of one or more events for
+      #   which Amazon Glacier will send notifications.
+      attr_accessor :events
 
     end
-
   end
 end

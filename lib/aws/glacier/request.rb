@@ -12,21 +12,20 @@
 # language governing permissions and limitations under the License.
 
 module AWS
-  module Core
+  class Glacier
 
     # @private
-    class JSONRequestBuilder
+    class Request < Core::Http::Request
 
-      def initialize api, operation
-        @x_amz_target = api[:target_prefix] + operation[:name]
-        @content_type = "application/x-amz-json-#{api[:json_version] || 1.0}"
-        @grammar = OptionGrammar.customize(operation[:inputs])
+      include Core::Signature::Version4
+
+      def initialize
+        super
+        self.headers['x-amz-glacier-version'] = Glacier::Client::API_VERSION
       end
 
-      def populate_request request, params
-        request.headers["content-type"] = @content_type
-        request.headers["x-amz-target"] = @x_amz_target
-        request.body = @grammar.to_json(params)
+      def service
+        'glacier'
       end
 
     end

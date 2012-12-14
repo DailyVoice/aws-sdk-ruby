@@ -63,6 +63,10 @@ module AWS
     #
     # @attr_reader [String,nil] session_token (nil) AWS secret token credential.
     #
+    # @attr_reader [String,nil] account_id (nil) Your AWS account id.  Only
+    #   certain services (like Glacier) require you to configure your
+    #   account id.
+    #
     # @attr_reader [String] auto_scaling_endpoint ('autoscaling.us-east-1.amazonaws.com')
     #   The service endpoint for Auto Scaling.
     #
@@ -101,6 +105,9 @@ module AWS
     #
     # @attr_reader [String] elb_endpoint ('elasticloadbalancing.us-east-1.amazonaws.com')
     #   The service endpoint for Elastic Load Balancing.
+    #
+    # @attr_reader [String] glacier_endpoint ('glacier.us-east-1.amazonaws.com')
+    #   The service endpoint for Amazon Glacier.
     #
     # @attr_reader [Object] http_handler The http handler that sends requests
     #   to AWS.  Defaults to an HTTP handler built on net/http.
@@ -443,6 +450,7 @@ module AWS
             :"#{ruby_name}_endpoint",
             :"#{ruby_name}_port",
             :"#{ruby_name}_region",
+            :account_id,
             :credential_provider,
             :http_handler,
             :http_read_timeout,
@@ -474,6 +482,10 @@ module AWS
       add_option :secret_access_key
 
       add_option :session_token
+
+      add_option :account_id do |config,account_id|
+        account_id ? account_id.gsub(/-/, '') : '-'
+      end
 
       add_option_with_needs :credential_provider,
         [:access_key_id, :secret_access_key, :session_token] do |cfg,static_creds|
